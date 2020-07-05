@@ -3,8 +3,8 @@ function initializeGame() {
     drawNewButtons();
     pickWord();
     makePuzzle();
-    tries_left = 6;
-    document.getElementById("tries_left").innerText = "Tries Left: " + tries_left;
+    triesLeft = 6;
+    document.getElementById("tries-left").innerText = "Tries Left: " + triesLeft;
     game_over = false;
 }
 
@@ -22,8 +22,8 @@ function drawNewButtons(){
 }
 
 function pickWord(){
-    let random = Math.floor((Math.random() * word_list.length));
-    word = word_list[random];
+    let random = Math.floor((Math.random() * wordList.length));
+    word = wordList[random];
 }
 
 function makePuzzle(){
@@ -75,13 +75,13 @@ function checkLetter(letter_index) {
             document.getElementById("puzzle").innerText = puzzle;
         }
         else {
-            if (tries_left > 0){
+            if (triesLeft > 0){
                 drawMan();
             }
-            tries_left -= 1;
-            document.getElementById("tries_left").innerText = "Tries Left: " + tries_left;
+            triesLeft -= 1;
+            document.getElementById("tries-left").innerText = "Tries Left: " + triesLeft;
         }
-        if (tries_left === 0) {
+        if (triesLeft === 0) {
             modalHeader.innerText = "You Lose"
             modalText.innerText = "The Word was " + word;
             resultsModal.style.display = "block";
@@ -95,7 +95,7 @@ function checkLetter(letter_index) {
 }
 
 function drawMan(){
-    switch (tries_left){
+    switch (triesLeft){
         case 6:
             ctx.moveTo(125, 85);
             ctx.arc(100, 85, 25, 0, 2 * Math.PI);
@@ -129,36 +129,23 @@ function drawMan(){
     }
 }
 
-// function getNewGame(){
-//     if(window.confirm("Do you want to play again")){
-//         initializeGame();
-//     }
-//     else{
-//         alert("Have a nice day.")
-//     }
-// }
-
 function getWords () {
-    $.ajax({ method: "GET", url: "https://raw.githubusercontent.com/PdxCodeGuild/20180116-FullStack-Day/master/1%20Python/data/english.txt"})
+    $.ajax({ method: "GET", url: "https://raw.githubusercontent.com/jmartin432/hangman/master/src/assets/english-words.txt"})
     .done(function(data) {
         data = data.split("\n");
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].length >= 8) {
-                word_list.push(data[i].toUpperCase());
-            }
-        }
+        wordList = data.filter(word => word.length > 8).map(word => word.toUpperCase())
         initializeGame();
     })
     .fail(function() {
-        word_list = ['HOPSCOTCH', 'BAMBOOZLE', 'RHINOCEROS'];
+        wordList = ['HOPSCOTCH', 'BAMBOOZLE', 'RHINOCEROS'];
         initializeGame();
     });
 }
 
 let word;
-let word_list = [];
+let wordList = [];
 let puzzle;
-let tries_left;
+let triesLeft;
 let game_over;
 let canvas = '';
 let ctx = '';
