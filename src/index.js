@@ -1,11 +1,13 @@
 function initializeGame() {
+    triesLeft = 6;
+    manParts = 0;
+    gameOver = false;
     drawNoose();
     drawNewButtons();
     pickWord();
     makePuzzle();
-    triesLeft = 6;
+    drawMan(canvasWidth, canvasHeight, manParts);
     document.getElementById("tries-left").innerText = "Tries Left: " + triesLeft;
-    game_over = false;
 }
 
 function drawNewButtons(){
@@ -37,22 +39,23 @@ function makePuzzle(){
 function drawNoose(){
     ctx.fillStyle = "pink";
     ctx.strokeStyle = "green";
-    ctx.fillRect(0, 0, 200, 400);
-    ctx.beginPath();
-    ctx.moveTo(20, 380);
-    ctx.lineTo(180, 380);
-    ctx.stroke();
-    ctx.lineTo(160, 380);
-    ctx.stroke();
-    ctx.lineTo(160, 20);
-    ctx.stroke();
-    ctx.lineTo(100, 20);
-    ctx.stroke();
-    ctx.lineTo(100, 60);
-    ctx.stroke();
+    // ctx.fillRect(0, 0, 200, 400);
+    // ctx.beginPath();
+    // ctx.moveTo(20, 380);
+    // ctx.lineTo(180, 380);
+    // ctx.stroke();
+    // ctx.lineTo(160, 380);
+    // ctx.stroke();
+    // ctx.lineTo(160, 20);
+    // ctx.stroke();
+    // ctx.lineTo(100, 20);
+    // ctx.stroke();
+    // ctx.lineTo(100, 60);
+    // ctx.stroke();
 }
 
 function checkLetter(letter_index) {
+    console.log(manParts)
     let index_string = letter_index.toString();
     let btn = document.getElementById(index_string);
     btn.classList.add("animate");
@@ -75,8 +78,9 @@ function checkLetter(letter_index) {
             document.getElementById("puzzle").innerText = puzzle;
         }
         else {
+            manParts += 1;
             if (triesLeft > 0){
-                drawMan();
+                drawMan(canvasWidth, canvasHeight, manParts);
             }
             triesLeft -= 1;
             document.getElementById("tries-left").innerText = "Tries Left: " + triesLeft;
@@ -84,49 +88,59 @@ function checkLetter(letter_index) {
         if (triesLeft === 0) {
             modalHeader.innerText = "You Lose"
             modalText.innerText = "The Word was " + word;
-            resultsModal.style.display = "block";
+            modalContainer.style.display = "block";
         }
         if (word === puzzle) {
             modalHeader.innerText = "You Win!"
             modalText.innerText = "Great job";
-            resultsModal.style.display = "block";
+            modalContainer.style.display = "block";
         }
     }
 }
 
-function drawMan(){
-    switch (triesLeft){
-        case 6:
-            ctx.moveTo(125, 85);
-            ctx.arc(100, 85, 25, 0, 2 * Math.PI);
-            ctx.stroke();
-            break;
-        case 5:
-            ctx.moveTo(100, 110);
-            ctx.lineTo(100, 220);
-            ctx.stroke();
-            break;
-        case 4:
-            ctx.moveTo(100, 140);
-            ctx.lineTo(150, 150);
-            ctx.stroke();
-            break;
-        case 3:
-            ctx.moveTo(100, 140);
-            ctx.lineTo(50, 150);
-            ctx.stroke();
-            break;
-        case 2:
-            ctx.moveTo(100, 220);
-            ctx.lineTo(150, 270);
-            ctx.stroke();
-            break;
-        case 1:
-            ctx.moveTo(100, 220);
-            ctx.lineTo(50, 270);
-            ctx.stroke();
-            break;
-    }
+function drawMan(width, height, parts){
+    let radius = width * 0.04;
+    let startX = width * .75;
+    let startY = height * .25
+    let bodyLength = height * .2;
+    let armStart = startY + radius + bodyLength * .1;
+    let legStart = startY + radius + bodyLength;
+    let armX = radius;
+    let armY = radius;
+    let legX = radius;
+    let legY = radius;
+    ctx.clearRect(0, 0, width, height)
+    ctx.beginPath();
+    if (parts === 0) return;
+    ctx.strokeStyle = "blue";
+    ctx.moveTo(startX, startY);
+    ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
+    ctx.stroke();
+    parts--;
+    if (parts === 0) return;
+    ctx.moveTo(startX, startY + radius);
+    ctx.lineTo(startX, startY + radius + bodyLength);
+    ctx.stroke();
+    parts--;
+    if (parts === 0) return;
+    ctx.moveTo(startX, armStart);
+    ctx.lineTo(startX + armX, armStart + armY);
+    ctx.stroke();
+    parts--;
+    if (parts === 0) return;
+    ctx.moveTo(startX, armStart);
+    ctx.lineTo(startX - armX, armStart + armY);
+    ctx.stroke();
+    parts--;
+    if (parts === 0) return;
+    ctx.moveTo(startX, legStart);
+    ctx.lineTo(startX + legX, legStart + legY);
+    ctx.stroke();
+    parts--;
+    if (parts === 0) return;
+    ctx.moveTo(startX, legStart);
+    ctx.lineTo(startX - legX, legStart + legY);
+    ctx.stroke();
 }
 
 function getWords () {
@@ -146,24 +160,41 @@ let word;
 let wordList = [];
 let puzzle;
 let triesLeft;
-let game_over;
-let canvas = '';
-let ctx = '';
-let resultsModal = '';
-let modalText = '';
-let modalHeader = '';
-let closeButton = '';
+let manParts;
+let gameOver;
+let canvas, ctx = '';
+let canvasWidth, canvasHeight = 0;
+let threeD = true;
+let modalContainer, resultsModal, modalText, modalHeader, closeButton = '';
 let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 window.onload = (event) => {
+    window.addEventListener('resize', (event) => {
+        canvas.setAttribute('width', canvasWidth.toString());
+        canvas.setAttribute('height', canvasHeight.toString());
+        canvasWidth = window.innerWidth;
+        canvasHeight = window.innerHeight;
+        drawMan(canvasWidth, canvasHeight, manParts);
+    })
     canvas = document.getElementById("canvas");
+    canvasWidth = window.innerWidth;
+    canvasHeight = window.innerHeight;
+    canvas.setAttribute('width', canvasWidth.toString());
+    canvas.setAttribute('height', canvasHeight.toString());
     ctx = canvas.getContext('2d');
+    // ctx = canvas.getContext('webgl');
+    // if (ctx === null) {
+    //     alert("Unable to initialize WebGL. Your browser or machine may not support it. Using 2d Canvas instead.");
+    //     ctx = canvas.getContext('2d');
+    //     threeD = false;
+    // }
+    modalContainer = document.getElementById("modal-container");
     resultsModal = document.getElementById("results-modal");
     modalText = document.getElementById("modal-text");
     modalHeader = document.getElementById("modal-header");
     closeButton = document.getElementById("close-button");
     closeButton.addEventListener('click', function() {
-        resultsModal.style.display = "none";
+        modalContainer.style.display = "none";
         initializeGame();
     })
     getWords();
