@@ -6,29 +6,28 @@
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="index.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gl-matrix@3.0.0/gl-matrix-min.js"></script>
+    <script src="scripts/index.js"></script>
+    <script src="scripts/gl-matrix-min.js"></script>
     <link rel="icon" href="../images/clubLogo20.png">
 </head>
 
 <body>
-    <div id="main">
-        <div id="game-board"></div>
-            <div id="puzzle-container">
-                <div id="text">
-                    <p id="puzzle"></p>
-                    <p id="tries-left"></p>
-                </div>
-                <div id="buttons"></div>
+    <div id="game-board"></div>
+        <div id="puzzle-container">
+            <div id="text">
+                <p id="puzzle"></p>
+                <p id="tries-left"></p>
             </div>
-            <canvas id="canvas"></canvas>
-
+            <div id="buttons"></div>
         </div>
-        <div id="modal-container">
-            <div class="modal" id="results-modal">
-                <h1 id="modal-header"></h1>
-                <p id="modal-text"></p>
-                <button id="close-button">Close</button>
-            </div>
+        <canvas id="canvas"></canvas>
+    </div>
+    <div id="modal-container">
+        <div class="modal" id="results-modal">
+            <h1 id="modal-header"></h1>
+            <p id="modal-text"></p>
+            <button id="close-button">Close</button>
         </div>
     </div>
 </body>
