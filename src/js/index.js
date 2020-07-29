@@ -1,3 +1,7 @@
+const glMatrix = require('gl-matrix')
+const $ = require('jquery')
+//const jQuery = require('jquery')
+
 function initializeGame() {
     let start = 0.0;
     triesLeft = 6;
@@ -18,39 +22,13 @@ function initializeGame() {
     window.requestAnimationFrame(render);
 }
 
-function drawNewButtons(){
-    document.getElementById('buttons').innerHTML = '';
-    for (let i = 0; i < 26; i++) {
-        let btn = document.createElement('BUTTON');
-        let id_string = '' + i + '';
-        btn.classList.add('letter');
-        btn.setAttribute('id', id_string);
-        btn.setAttribute('onClick', 'checkLetter(this.id)');
-        btn.innerHTML = '<b>' + alphabet[i] + '</b>';
-        document.querySelector('#buttons').appendChild(btn);
-    }
-}
-
-function pickWord(){
-    let random = Math.floor((Math.random() * wordList.length));
-    word = wordList[random];
-}
-
-function makePuzzle(){
-    puzzle = '';
-    for (let i = 0; i < word.length; i++) {
-        puzzle += '_';
-    }
-    document.getElementById('puzzle').innerText = puzzle;
-}
-
-function checkLetter(letter_index) {
-    console.log(manParts)
-    let index_string = letter_index.toString();
-    let btn = document.getElementById(index_string);
+function checkLetter (event) {
+    let button_id = event.target.id
+    let button_index = parseInt(button_id)
+    let btn = document.getElementById(button_id);
     btn.classList.add('animate');
     $(btn).on('animationend', function() {$(this).removeClass('animate');});
-    let letter = alphabet[letter_index];
+    let letter = String.fromCharCode(button_index + 65);
     let puzzle_update = '';
     let class_list = btn.classList.toString();
     if((class_list.indexOf('picked') < 0)) {
@@ -117,7 +95,6 @@ function checkLetter(letter_index) {
                 default:
                 // code block
             }
-            console.log(colorList)
             document.getElementById('tries-left').innerText = 'Tries Left: ' + triesLeft;
         }
         if (triesLeft === 0) {
@@ -133,6 +110,34 @@ function checkLetter(letter_index) {
         threeD ? drawMan3D(gl, programInfo, buffers) : drawMan(canvasWidth, canvasHeight, manParts);
     }
 }
+
+function drawNewButtons(){
+    document.getElementById('buttons').innerHTML = '';
+    for (let i = 0; i < 26; i++) {
+        let btn = document.createElement('BUTTON');
+        let id_string = i.toString();
+        btn.classList.add('letter');
+        btn.setAttribute('id', id_string);
+        btn.innerText = String.fromCharCode(i + 65);
+        btn.addEventListener('click', checkLetter);
+        document.querySelector('#buttons').appendChild(btn);
+    }
+}
+
+function pickWord(){
+    let random = Math.floor((Math.random() * wordList.length));
+    word = wordList[random];
+}
+
+function makePuzzle(){
+    puzzle = '';
+    for (let i = 0; i < word.length; i++) {
+        puzzle += '_';
+    }
+    document.getElementById('puzzle').innerText = puzzle;
+}
+
+
 
 function drawMan(width, height, parts){
     let radius = width * 0.04;

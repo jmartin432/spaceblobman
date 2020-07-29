@@ -99,13 +99,6 @@ body {
     background-color: rgba(0,0,0,0.9);
 }
 
-#buttons, #puzzle{
-    /*font-size: 40px;*/
-    /*display: inline-block;*/
-    /*!*margin: 30px;*!*/
-    /*vertical-align: middle;*/
-}
-
 button.letter{
     margin: 5px;
     font-size: 20px;
